@@ -17,6 +17,7 @@ class SchedulesProvider with ChangeNotifier {
   set url_calendar(String value) {
     _url_calendar = value;
     calendarService._url_calendar = _url_calendar;
+    getSchedulesData();
   }
 
   void getSchedulesData() {
