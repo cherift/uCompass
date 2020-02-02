@@ -8,7 +8,7 @@ class SchedulesProvider with ChangeNotifier {
   String _url_calendar;
   CalendarService calendarService;
 
-  Schedules() {
+  SchedulesProvider() {
     calendarService = new CalendarService();
   }
 
@@ -20,19 +20,39 @@ class SchedulesProvider with ChangeNotifier {
     getSchedulesData();
   }
 
+  bool urlCalendarIsDefined() {
+    return url_calendar != null && url_calendar != "";
+  }
+
   void getSchedulesData() {
     calendarService.getCurrentSchoolYearEvents().then((events) {
       _events = events;
       notifyListeners();
     });
   }
+
+  Map<DateTime, List<Event>> getFormatedDatForCalendar(){
+    return _mapEventsToMap(_events);
+  }
+
+  Map<DateTime, List<Event>> _mapEventsToMap(Events events) {
+    List<Event> eventList = events.items;
+    List<DateTime> dates =
+    eventList.map((e) => e.start.dateTime).toSet().toList();
+
+    Map<DateTime,List<Event>> map = Map.fromIterable(dates,
+        key: (date) => date,
+        value: (date) =>
+            eventList.where((event) => _isSameDay(date, event.start.dateTime)).toList());
+
+    return map;
+  }
+
+  bool _isSameDay(DateTime date_1, DateTime date_2){
+    return (date_1.day==date_2.day) && (date_1.month==date_2.month) && (date_1.year==date_2.year) ;
+  }
+
 }
-
-
-
-
-
-
 
 class CalendarService {
   final accountCredentials = new ServiceAccountCredentials.fromJson({
@@ -59,13 +79,13 @@ class CalendarService {
   String _url_calendar;
 
   Future<void> initConection() async {
-    clientViaServiceAccount(accountCredentials, _scopes).then((client) {
+    return clientViaServiceAccount(accountCredentials, _scopes).then((client) {
       _calendar = new CalendarApi(client);
       connected = true;
     });
   }
 
-  Future<Events> getCurrentSchoolYearEvents() async {
+  Future getCurrentSchoolYearEvents() async {
     int currentYear = DateTime.now().year;
     DateTime timeMin = new DateTime(currentYear - 1, 1, 1);
     DateTime timeMax = new DateTime(currentYear + 1, 12, 31);
