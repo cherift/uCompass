@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:u_compass/widgets/drawer_menu.dart';
 
 
 
@@ -11,6 +12,7 @@ class MainScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("U-Compass"),
       ),
+      drawer: Menu(),
       body: Center(
         child: Text("App debut !"),
       ),
