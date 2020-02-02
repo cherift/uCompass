@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:u_compass/providers/events_to_display.dart';
 import 'package:u_compass/screens/main_screen.dart';
 import 'package:u_compass/screens/schedules_screen.dart';
 
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: SchedulesProvider())
+        ChangeNotifierProvider.value(value: SchedulesProvider()),
+        ChangeNotifierProvider.value(value: EventsToDisplayProvider())
       ],
       child: MaterialApp(
         title: 'U-Compass',

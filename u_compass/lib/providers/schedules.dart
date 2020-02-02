@@ -87,8 +87,8 @@ class CalendarService {
 
   Future getCurrentSchoolYearEvents() async {
     int currentYear = DateTime.now().year;
-    DateTime timeMin = new DateTime(currentYear - 1, 1, 1);
-    DateTime timeMax = new DateTime(currentYear + 1, 12, 31);
+    DateTime timeMin = new DateTime(currentYear -1, 1, 1);
+    DateTime timeMax = new DateTime(currentYear +1, 1, 31);
 
     if (!connected) {
       await initConection();

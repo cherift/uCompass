@@ -24,7 +24,7 @@ class CalendarCustom extends StatelessWidget {
           onDaySelected: onDaySelectedChanged,
         )
         : Container(
-            height: 500,
+            height: 200,
             margin: EdgeInsets.all(20),
             child: Center(
               child: Column(
