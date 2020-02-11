@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:u_compass/screens/main_screen.dart';
 import 'package:u_compass/screens/schedules_screen.dart';
+import 'package:u_compass/screens/services_screen.dart';
 
 
 class Menu extends StatelessWidget {
@@ -16,7 +17,7 @@ class Menu extends StatelessWidget {
             ),
           ),
           itemMenu("Accueil",Icons.home,context,routeName:MainScreen.routeName),
-          itemMenu("Services",Icons.room_service,context,routeName: MainScreen.routeName),
+          itemMenu("Services",Icons.room_service,context,routeName: ServicesScreen.routeName),
           itemMenu("EDT",Icons.search,context,routeName:SchedulesScreen.routeNampe),
           itemMenu("Realité vituel",Icons.card_membership,context,routeName: MainScreen.routeName),
 

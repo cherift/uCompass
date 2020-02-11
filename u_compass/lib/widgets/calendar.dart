@@ -1,28 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:googleapis/calendar/v3.dart' hide Colors;
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:u_compass/providers/schedules.dart';
 
-class CalendarCustom extends StatelessWidget {
-  final textEditingController = new TextEditingController();
-
+class CalendarCustom extends StatefulWidget {
   final Function onDaySelectedChanged;
-
-  CalendarController calendarController = new CalendarController();
 
   CalendarCustom(this.onDaySelectedChanged);
 
+  @override
+  _CalendarCustomState createState() => _CalendarCustomState();
+}
+
+class _CalendarCustomState extends State<CalendarCustom> {
+  final textEditingController = new TextEditingController();
+
+  CalendarController _calendarController;
+  SchedulesProvider schedulesProvider;
+
+  Future<Events> get eventsData {
+    return schedulesProvider.getSchedulesData();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _calendarController = CalendarController();
+  }
+
+  @override
+  void dispose() {
+    _calendarController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final schedulesProvider = Provider.of<SchedulesProvider>(context);
+    schedulesProvider = Provider.of<SchedulesProvider>(context);
     return schedulesProvider.urlCalendarIsDefined()
-        ? TableCalendar(
-          locale: "fr_FR",
-          calendarController: calendarController,
-          events: schedulesProvider.getFormatedDatForCalendar(),
-          onDaySelected: onDaySelectedChanged,
-        )
+        ? FutureBuilder<Events>(
+            future: eventsData,
+            builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
+              if (snapshot.data != null) {
+                return TableCalendar(
+                  locale: "fr_FR",
+                  calendarController: _calendarController,
+                  events: schedulesProvider.mapEventsToMap(snapshot.data),
+                  onDaySelected: widget.onDaySelectedChanged,
+                  calendarStyle: CalendarStyle(
+                      selectedColor: Theme.of(context).primaryColor,
+                    weekendStyle: TextStyle(color: Theme.of(context).primaryColor)),
+
+                );
+              } else {
+                return Container(
+                    margin: EdgeInsets.all(20),
+                    child: Center(child: CircularProgressIndicator()));
+              }
+            },
+          )
         : Container(
             height: 200,
             margin: EdgeInsets.all(20),
@@ -43,7 +80,10 @@ class CalendarCustom extends StatelessWidget {
                     child: Text("Valider"),
                     color: Colors.deepPurple,
                     textColor: Colors.white,
-                    onPressed: (){schedulesProvider.url_calendar = textEditingController.value.text;},
+                    onPressed: () {
+                      schedulesProvider.url_calendar =
+                          textEditingController.value.text;
+                    },
                   )
                 ],
               ),

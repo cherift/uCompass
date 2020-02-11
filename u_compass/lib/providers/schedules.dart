@@ -10,6 +10,7 @@ class SchedulesProvider with ChangeNotifier {
 
   SchedulesProvider() {
     calendarService = new CalendarService();
+    calendarService.initConection();
   }
 
   String get url_calendar => _url_calendar;
@@ -17,25 +18,24 @@ class SchedulesProvider with ChangeNotifier {
   set url_calendar(String value) {
     _url_calendar = value;
     calendarService._url_calendar = _url_calendar;
-    getSchedulesData();
+    notifyListeners();
   }
 
   bool urlCalendarIsDefined() {
     return url_calendar != null && url_calendar != "";
   }
 
-  void getSchedulesData() {
-    calendarService.getCurrentSchoolYearEvents().then((events) {
-      _events = events;
-      notifyListeners();
-    });
+  Future<Events> getSchedulesData() {
+    return calendarService.getCurrentSchoolYearEvents();
   }
+
+
 
   Map<DateTime, List<Event>> getFormatedDatForCalendar(){
-    return _mapEventsToMap(_events);
+    return mapEventsToMap(_events);
   }
 
-  Map<DateTime, List<Event>> _mapEventsToMap(Events events) {
+  Map<DateTime, List<Event>> mapEventsToMap(Events events) {
     List<Event> eventList = events.items;
     List<DateTime> dates =
     eventList.map((e) => e.start.dateTime).toSet().toList();
@@ -85,7 +85,7 @@ class CalendarService {
     });
   }
 
-  Future getCurrentSchoolYearEvents() async {
+  Future<Events> getCurrentSchoolYearEvents() async {
     int currentYear = DateTime.now().year;
     DateTime timeMin = new DateTime(currentYear -1, 1, 1);
     DateTime timeMax = new DateTime(currentYear +1, 1, 31);
@@ -98,8 +98,10 @@ class CalendarService {
         "kmgohivkaknf9cvbgcso55f4eo@group.calendar.google.com",
         timeMin: timeMin,
         timeMax: timeMax,
+        timeZone: "Europe/Paris",
         maxAttendees: 1000);
   }
+
 
   String get url_calendar => _url_calendar;
 

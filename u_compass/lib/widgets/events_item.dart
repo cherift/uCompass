@@ -7,8 +7,9 @@ import 'event_item.dart';
 
 class EventsListWidget extends StatelessWidget {
 
+  final DateTime currentDatetime;
 
-  EventsListWidget();
+  EventsListWidget(this.currentDatetime);
 
 
   @override
@@ -20,7 +21,7 @@ class EventsListWidget extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         itemCount: eventsToDisplayProvider.events.length,
         itemBuilder: (BuildContext context,int index){
-          return EventWidget(eventsToDisplayProvider.events[index]);
+          return EventWidget(eventsToDisplayProvider.events[index],eventsToDisplayProvider.currentDateTime);
         },
 
 
