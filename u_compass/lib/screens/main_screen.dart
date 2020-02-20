@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:u_compass/widgets/bottom_navigation_bar_menu.dart';
 import 'package:u_compass/widgets/drawer_menu.dart';
 import 'package:u_compass/widgets/map.dart';
 
@@ -30,6 +31,10 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  nagigate(int t){
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +45,7 @@ class _MainScreenState extends State<MainScreen> {
       body: Center(
         child: Text("Bienvenue !"),
       ),
+      bottomNavigationBar: BottomMenu(0),
       floatingActionButton: FloatingActionButton(
         child: Text("Go Map"),
         onPressed: goMap,

@@ -26,6 +26,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.mapbox.android.core.location.LocationEngine
+import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.maps.Style
 import java.security.Permission
 import java.security.Permissions
@@ -37,6 +39,11 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
     private var mapwizeMap: MapwizeMap? = null
     private var locationProvider: ManualIndoorLocationProvider? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var permissionManager: PermissionsManager;
+    private lateinit var originLocation: Location;
+
+    private var locationEngine: LocationEngine? = null;
+   // private var locationLayerPlugin: LocationLayerPlugin? = null;
     private var latitude:Double = 70.0
     private var  longitude:Double = 70.0
 
@@ -111,9 +118,8 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         mapwizeMap.setIndoorLocationProvider(this.locationProvider!!)
 
         mapwizeMap.addOnLongClickListener {
-            System.out.println("YAYAYA")
-            val il = IndoorLocation("manual", latitude,
-                    longitude,
+            val il = IndoorLocation("manual", it.latLngFloor.latitude,
+                    it.latLngFloor.longitude,
                     it.latLngFloor.floor,
                     System.currentTimeMillis())
             this.locationProvider?.setIndoorLocation(il)

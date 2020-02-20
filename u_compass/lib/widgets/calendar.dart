@@ -78,7 +78,7 @@ class _CalendarCustomState extends State<CalendarCustom> {
                   ),
                   RaisedButton(
                     child: Text("Valider"),
-                    color: Colors.deepPurple,
+                    color: Theme.of(context).primaryColor,
                     textColor: Colors.white,
                     onPressed: () {
                       schedulesProvider.url_calendar =
