@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:u_compass/providers/authentication.dart';
 import 'package:u_compass/screens/main_screen.dart';
 import 'package:u_compass/screens/plan_screen.dart';
 import 'package:u_compass/screens/schedules_screen.dart';
@@ -12,12 +14,13 @@ class BottomMenu extends StatelessWidget {
 
   BuildContext context;
   int current_index;
+  AuthenticationProvider authenticationProvider;
 
 
   BottomMenu(this.current_index);
 
   navigate(int item){
-
+    authenticationProvider.connect("admin", "admin");
     switch(item) {
       case 0 :Navigator.pushReplacementNamed(context, MainScreen.routeName);break;
       case 1 :Navigator.pushReplacementNamed(context, PlanScreen.routeName);break;
@@ -29,6 +32,7 @@ class BottomMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    authenticationProvider = Provider.of<AuthenticationProvider>(context);
     this.context = context;
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:u_compass/providers/authentication.dart';
 import 'package:u_compass/providers/events_to_display.dart';
 import 'package:u_compass/screens/main_screen.dart';
 import 'package:u_compass/screens/plan_screen.dart';
@@ -39,7 +40,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: SchedulesProvider()),
-        ChangeNotifierProvider.value(value: EventsToDisplayProvider())
+        ChangeNotifierProvider.value(value: EventsToDisplayProvider()),
+        ChangeNotifierProvider.value(value: AuthenticationProvider())
       ],
       child: MaterialApp(
         title: 'U-Compass',

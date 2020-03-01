@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:u_compass/widgets/bottom_navigation_bar_menu.dart';
 import 'package:u_compass/widgets/drawer_menu.dart';
 
-
 class Post {
   final String title;
   final String description;
@@ -29,7 +28,7 @@ class ServicesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       drawer: Menu(),
-      body:  Column(
+      body: Column(
         children: <Widget>[
           Container(
             height: 80,
@@ -37,8 +36,7 @@ class ServicesScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SearchBar(),
             ),
-
-    ),
+          ),
           Container(
             height: 70,
             child: ListView(
@@ -47,68 +45,10 @@ class ServicesScreen extends StatelessWidget {
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  margin: EdgeInsets.fromLTRB(5,15,5,15),
-                  decoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                  child: Center(
-                    child: Wrap(
-                      children: <Widget>[
-                        Icon(Icons.restaurant),
-                        Text("Restauration")
-                      ],
-                    ),
-                  ),
-                ), Container(
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  margin: EdgeInsets.fromLTRB(5,15,5,15),
-                  decoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                  child: Center(
-                    child: Wrap(
-                      children: <Widget>[
-                        Icon(Icons.account_balance),
-                        Text("Inscription")
-                      ],
-                    ),
-                  ),
-                ), Container(
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  margin: EdgeInsets.fromLTRB(5,15,5,15),
-                  decoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                  child: Center(
-                    child: Wrap(
-                      children: <Widget>[
-                        Icon(Icons.restaurant),
-                        Text("Restauration")
-                      ],
-                    ),
-                  ),
-                ), Container(
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  margin: EdgeInsets.fromLTRB(5,15,5,15),
-                  decoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                  child: Center(
-                    child: Wrap(
-                      children: <Widget>[
-                        Icon(Icons.restaurant),
-                        Text("Restauration")
-                      ],
-                    ),
-                  ),
-                ), Container(
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  margin: EdgeInsets.fromLTRB(5,15,5,15),
-                  decoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                  child: Center(
-                    child: Wrap(
-                      children: <Widget>[
-                        Icon(Icons.restaurant),
-                        Text("Restauration")
-                      ],
-                    ),
-                  ),
-                ), Container(
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  margin: EdgeInsets.fromLTRB(5,15,5,15),
-                  decoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                  margin: EdgeInsets.fromLTRB(5, 15, 5, 15),
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(40.0))),
                   child: Center(
                     child: Wrap(
                       children: <Widget>[
@@ -118,13 +58,57 @@ class ServicesScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
+                Container(
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  margin: EdgeInsets.fromLTRB(5, 15, 5, 15),
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                  child: Center(
+                    child: Wrap(
+                      children: <Widget>[
+                        Icon(Icons.restaurant),
+                        Text("Restauration")
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  margin: EdgeInsets.fromLTRB(5, 15, 5, 15),
+                  decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                  child: Center(
+                    child: Wrap(
+                      children: <Widget>[
+                        Icon(Icons.restaurant),
+                        Text("Restauration")
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  margin: EdgeInsets.fromLTRB(5, 15, 5, 15),
+                  decoration: BoxDecoration(
+                      color: Colors.lightGreen,
+                      borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                  child: Center(
+                    child: Wrap(
+                      children: <Widget>[
+                        Icon(Icons.restaurant),
+                        Text("Restauration")
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           )
         ],
       ),
-        bottomNavigationBar: BottomMenu(2),
+      bottomNavigationBar: BottomMenu(2),
     );
-            }
+  }
 }
