@@ -2,35 +2,30 @@ package com.example.u_compass
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.location.Location
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.FrameLayout
-import io.indoorlocation.core.IndoorLocation
-import io.indoorlocation.manual.ManualIndoorLocationProvider
-import io.mapwize.mapwizeui.MapwizeFragment
-import io.mapwize.mapwizeui.MapwizeFragmentUISettings
-import io.mapwize.mapwizesdk.api.Floor
-import io.mapwize.mapwizesdk.api.MapwizeObject
-import io.mapwize.mapwizesdk.api.Place
-import io.mapwize.mapwizesdk.map.MapOptions
-import io.mapwize.mapwizesdk.map.MapwizeMap
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.location.Location
-import android.location.LocationListener
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.mapboxsdk.maps.Style
-import java.security.Permission
-import java.security.Permissions
+import io.indoorlocation.core.IndoorLocation
+import io.indoorlocation.manual.ManualIndoorLocationProvider
+import io.mapwize.mapwizesdk.api.ApiCallback
+import io.mapwize.mapwizesdk.api.Floor
+import io.mapwize.mapwizesdk.api.MapwizeObject
+import io.mapwize.mapwizesdk.api.Place
+import io.mapwize.mapwizesdk.map.MapOptions
+import io.mapwize.mapwizesdk.map.MapwizeMap
+import io.mapwize.mapwizeui.MapwizeFragment
+import io.mapwize.mapwizeui.MapwizeFragmentUISettings
 
 
 class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener {
@@ -124,8 +119,28 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
                     System.currentTimeMillis())
             this.locationProvider?.setIndoorLocation(il)
         }
-        
 
+        mapwizeMap.mapwizeApi.getPlace("5e4fb50400c03a0016b79e7b", object : ApiCallback<Place> {
+            override fun onSuccess(place: Place){
+                
+                println("un truc quon peut recup dans les logs avant")
+                val mainHandler: Handler = Handler(Looper.getMainLooper())
+
+                val myRunnable: Runnable = Runnable() {
+                    fun run() {
+                        mapwizeFragment!!.selectPlace(place, true)
+                    } // This is your code
+                }
+                mainHandler.post(myRunnable)
+
+                println("un truc quon peut recup dans les logs")
+            }
+
+            override fun onFailure(throwable: Throwable){}
+
+            override fun onNext(`object`: Place) { /* compiled code */
+            }
+        })
     }
 
     override fun onMenuButtonClick() {
