@@ -5,8 +5,9 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,7 @@ import io.mapwize.mapwizesdk.map.MapOptions
 import io.mapwize.mapwizesdk.map.MapwizeMap
 import io.mapwize.mapwizeui.MapwizeFragment
 import io.mapwize.mapwizeui.MapwizeFragmentUISettings
+import io.reactivex.observers.DisposableCompletableObserver
 
 
 class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener {
@@ -120,18 +122,29 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
             this.locationProvider?.setIndoorLocation(il)
         }
 
-        mapwizeMap.mapwizeApi.getPlace("5e4fb50400c03a0016b79e7b", object : ApiCallback<Place> {
+        /* mapwizeMap.mapwizeApi.getPlace("5e4fb50400c03a0016b79e7b", object : ApiCallback<Place> {
             override fun onSuccess(place: Place){
-                
-                println("un truc quon peut recup dans les logs avant")
-                val mainHandler: Handler = Handler(Looper.getMainLooper())
 
-                val myRunnable: Runnable = Runnable() {
-                    fun run() {
-                        mapwizeFragment!!.selectPlace(place, true)
-                    } // This is your code
-                }
-                mainHandler.post(myRunnable)
+                println("un truc quon peut recup dans les logs avant")
+
+                val compositeDisposable : CompositeDisposable = CompositeDisposable()
+
+                compositeDisposable.clear()
+
+                compositeDisposable.add(mapwizeFragment!!.selectPlace(place, true)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(object : DisposableCompletableObserver() {
+
+                        override fun onComplete() {
+                            print("un truc qui fonctionne quoi")
+                        }
+
+                        override fun onError(e: Throwable) {
+                            println("un truc ${e.message}")
+                        }
+                    })
+                )
 
                 println("un truc quon peut recup dans les logs")
             }
@@ -140,7 +153,7 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
 
             override fun onNext(`object`: Place) { /* compiled code */
             }
-        })
+        })*/
     }
 
     override fun onMenuButtonClick() {

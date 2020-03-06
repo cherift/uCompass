@@ -19,7 +19,7 @@ class Menu extends StatelessWidget {
           itemMenu("Accueil",Icons.home,context,routeName:MainScreen.routeName),
           itemMenu("Services",Icons.room_service,context,routeName: ServicesScreen.routeName),
           itemMenu("EDT",Icons.search,context,routeName:SchedulesScreen.routeNampe),
-          itemMenu("Realité vituel",Icons.card_membership,context,routeName: MainScreen.routeName),
+          itemMenu("Realité vituelle",Icons.card_membership,context,routeName: MainScreen.routeName),
 
 
         ],
@@ -39,7 +39,10 @@ class Menu extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right:18.0),
-              child: Icon(icon),
+              child: Icon(
+                  icon,
+                  color: Colors.white,
+              ),
             ),
             Text(title,style: TextStyle(color:Colors.white,fontSize: 32,fontWeight: FontWeight.w400),)
           ],

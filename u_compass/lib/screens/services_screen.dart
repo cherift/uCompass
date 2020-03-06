@@ -57,17 +57,18 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   /// Returns a raised button for a preference service
   RaisedButton serviceButton(Service service){
+
     return RaisedButton.icon(
         onPressed: goMap,
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
         ),
         icon: Icon(
-          Icons.restaurant,
+          service.type,
           color: Colors.white,
         ),
         label: Text(
-            "Restaurant",
+            service.name,
             style : TextStyle(
               color: Colors.white,
             )
@@ -100,7 +101,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                       child: Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(
-                          Icons.restaurant,
+                          service.type,
                           color: Colors.white,
                           size: 30.0,
                         ),
@@ -111,7 +112,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                         // Service Title
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Service 1",
+                          service.name,
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 20.0
@@ -153,19 +154,18 @@ class _ServicesScreenState extends State<ServicesScreen> {
               scrollDirection: Axis.horizontal,
               children: <Widget>[
                 SizedBox(width: 10),
-                serviceButton(null),
+                serviceButton(Service("Accueil M5", Icons.table_chart, "", 0, 0)),
                 SizedBox(width: 10),
-                serviceButton(null),
+                serviceButton(Service("Restau U", Icons.restaurant, "", 0, 0)),
                 SizedBox(width: 10),
-                serviceButton(null),
+                serviceButton(Service("Admin Sys", Icons.table_chart, "", 0, 0)),
                 SizedBox(width: 10),
-                serviceButton(null),
+                serviceButton(Service("Inscription", Icons.table_chart, "", 0, 0)),
                 SizedBox(width: 10),
               ],
             ),
           ),
-          Container(
-            height: 374 ,
+          Expanded(
             child: StaggeredGridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12.0,
@@ -180,12 +180,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
                   StaggeredTile.extent(1, 150.0),
                 ],
                 children: <Widget>[
-                  serviceContainer(null),
-                  serviceContainer(null),
-                  serviceContainer(null),
-                  serviceContainer(null),
-                  serviceContainer(null),
-                  serviceContainer(null),
+                  serviceContainer(Service("Accueil M5", Icons.table_chart, "", 0, 0)),
+                  serviceContainer(Service("Toilette RDC", Icons.wc, "", 0, 0)),
+                  serviceContainer(Service("M2 E-service", Icons.table_chart, "", 0, 0)),
+                  serviceContainer(Service("Caffé 1", Icons.local_drink, "", 0, 0)),
+                  serviceContainer(Service("Distributeur", Icons.local_drink, "", 0, 0)),
+                  serviceContainer(Service("Toilette 1er E", Icons.wc, "", 0, 0)),
                 ],
             ),
           )

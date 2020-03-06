@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
+
 class Service {
 
   String name;
-  String type;
+  IconData type;
   String destination;
   double latitude;
   double longitude;
