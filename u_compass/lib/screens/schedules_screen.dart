@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart' hide Colors;
 import 'package:provider/provider.dart';
+import 'package:u_compass/providers/authentication.dart';
 import 'package:u_compass/providers/events_to_display.dart';
 import 'package:u_compass/widgets/bottom_navigation_bar_menu.dart';
 import 'package:u_compass/widgets/calendar.dart' ;
@@ -18,6 +19,7 @@ class SchedulesScreen extends StatefulWidget {
 
 class _SchedulesScreenState extends State<SchedulesScreen> {
   EventsToDisplayProvider eventsToDisplayProvider;
+  AuthenticationProvider authenticationProvider;
 
   List<Event> eventsToDisplay = [];
 
@@ -32,6 +34,8 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
   @override
   Widget build(BuildContext context) {
     eventsToDisplayProvider = Provider.of<EventsToDisplayProvider>(context,listen: false);
+    authenticationProvider = Provider.of<AuthenticationProvider>(context,listen: false);
+    authenticationProvider.connect("admin", "admin");
     return Scaffold(
         appBar: AppBar(
           title: Text("U-Compass"),

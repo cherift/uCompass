@@ -21,14 +21,15 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.location.Location
 import android.location.LocationListener
+import android.os.Looper
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.maps.Style
+import io.mapwize.mapwizesdk.api.DirectionPoint
 import java.security.Permission
 import java.security.Permissions
 
@@ -41,6 +42,7 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var permissionManager: PermissionsManager;
     private lateinit var originLocation: Location;
+    private lateinit var locationCallback: LocationCallback
 
     private var locationEngine: LocationEngine? = null;
    // private var locationLayerPlugin: LocationLayerPlugin? = null;
@@ -63,8 +65,8 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         // Uncomment and change value to test different settings configuration
         val uiSettings = MapwizeFragmentUISettings.Builder()
                 //.menuButtonHidden(true)
-                //.followUserButtonHidden(false)
-                //.floorControllerHidden(false)
+                .followUserButtonHidden(false)
+                .floorControllerHidden(false)
                 //.compassHidden(true)
                 .build()
         mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
@@ -74,7 +76,7 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         ft.add(frameLayout.id, mapwizeFragment!!)
         ft.commit()
 
-      //  setupPermissions()
+        setupPermissions()
         makeRequest()
         obtieneLocalizacion()
         System.out.println("YAYAYA")
@@ -82,7 +84,7 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
     }
 
     private fun setupPermissions() {
-        val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             System.out.println("autorise")
@@ -91,16 +93,17 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
 
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION),
                 101)
     }
 
     @SuppressLint("MissingPermission")
     private fun obtieneLocalizacion(){
         System.out.println("YAYAYA")
-        fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    System.out.println("LAST LOCATION")
+
+        fusedLocationClient.lastLocation.addOnCompleteListener(this){ task ->
+                var location: Location? = task.result;
+                    System.out.println("LAST LOCATION"+location.toString())
                     if(location!=null) {
                         latitude = location.latitude
                         longitude = location.longitude
@@ -117,14 +120,30 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         this.locationProvider = ManualIndoorLocationProvider()
         mapwizeMap.setIndoorLocationProvider(this.locationProvider!!)
 
-        mapwizeMap.addOnLongClickListener {
-            val il = IndoorLocation("manual", it.latLngFloor.latitude,
-                    it.latLngFloor.longitude,
-                    it.latLngFloor.floor,
+
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        System.out.println("LAST LOCATION"+location.toString())
+                        if(location!=null) {
+                            latitude = location.latitude
+                            longitude = location.longitude
+                        }
+                    }
+
+            val il = IndoorLocation("manual", latitude,
+                    longitude,
+                    0.0,
                     System.currentTimeMillis())
             this.locationProvider?.setIndoorLocation(il)
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations){
+                    // Update UI with location data
+                    // ...
+                }
+            }
         }
-        
 
     }
 

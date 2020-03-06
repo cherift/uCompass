@@ -4,21 +4,20 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart';
 import 'package:u_compass/widgets/bottom_navigation_bar_menu.dart';
-
+import 'package:u_compass/widgets/drawer_menu.dart';
 
 class PlanScreen extends StatefulWidget {
+  static const String routeName = "/plan";
 
-   static const String routeName = "/plan";
   @override
   _PlanScreenState createState() => _PlanScreenState();
 }
 
 class _PlanScreenState extends State<PlanScreen> {
+
   String _platformVersion = 'Unknown';
-  final _origin =
-  Location(name: "City Hall", latitude: 42.886448, longitude: -78.878372);
-  final _destination = Location(
-      name: "Downtown Buffalo", latitude: 42.8866177, longitude: -78.8814924);
+  final _origin = Location(name: "City Hall", latitude: 48.862725, longitude: 3.5000000);
+  final _destination = Location(name: "Campus lille", latitude: 48.862725, longitude: 2.287592);
 
   MapboxNavigation _directions;
   bool _arrived = false;
@@ -67,6 +66,7 @@ class _PlanScreenState extends State<PlanScreen> {
         appBar: AppBar(
           title: const Text('U-Compass'),
         ),
+        drawer: Menu(),
         body: Center(
           child: Column(children: <Widget>[
             SizedBox(
@@ -83,7 +83,7 @@ class _PlanScreenState extends State<PlanScreen> {
                     origin: _origin,
                     destination: _destination,
                     mode: NavigationMode.drivingWithTraffic,
-                    simulateRoute: true);
+                    simulateRoute: false);
               },
             ),
             SizedBox(
@@ -113,7 +113,6 @@ class _PlanScreenState extends State<PlanScreen> {
                 ],
               ),
             ),
-
           ]),
         ),
         bottomNavigationBar: BottomMenu(1),
