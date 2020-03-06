@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 class Service {
 
   String name;
+  String placeid;
   IconData type;
   String destination;
   double latitude;
@@ -12,5 +13,6 @@ class Service {
           this.type,
           this.destination,
           this.latitude,
-          this.longitude);
+          this.longitude,
+          this.placeid);
 }

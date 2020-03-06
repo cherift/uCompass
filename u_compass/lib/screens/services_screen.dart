@@ -31,13 +31,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   String test;
 
-  Future<void> goMap() async {
+  Future<void> goMap(String place) async {
     String batteryLevel;
     try {
-      final String result = await platform.invokeMethod('test');
-      batteryLevel=result;
+      final String result = await platform.invokeMethod('test', {'placeid' : place});
     } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
+      print(e.message);
     }
 
     setState(() {
@@ -59,7 +58,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
   RaisedButton serviceButton(Service service){
 
     return RaisedButton.icon(
-        onPressed: goMap,
+        onPressed: () { goMap(service.placeid); },
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
         ),
@@ -80,7 +79,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
   /// Returns a container for a service
   GestureDetector serviceContainer(Service service){
     return GestureDetector(
-      onTap: goMap,
+      onTap: () { goMap(service.placeid); },
       child: Material(
         color: Colors.white,
         elevation: 14.0,
@@ -154,13 +153,13 @@ class _ServicesScreenState extends State<ServicesScreen> {
               scrollDirection: Axis.horizontal,
               children: <Widget>[
                 SizedBox(width: 10),
-                serviceButton(Service("Accueil M5", Icons.table_chart, "", 0, 0)),
+                serviceButton(Service("Accueil M5", Icons.table_chart, "", 0, 0, "5e4fb50400c03a0016b79e7b")),
                 SizedBox(width: 10),
-                serviceButton(Service("Restau U", Icons.restaurant, "", 0, 0)),
+                serviceButton(Service("Restau U", Icons.restaurant, "", 0, 0, "5e4fb50400c03a0016b79e7b")),
                 SizedBox(width: 10),
-                serviceButton(Service("Admin Sys", Icons.table_chart, "", 0, 0)),
+                serviceButton(Service("Admin Sys", Icons.table_chart, "", 0, 0, "5e4fb50400c03a0016b79e7b")),
                 SizedBox(width: 10),
-                serviceButton(Service("Inscription", Icons.table_chart, "", 0, 0)),
+                serviceButton(Service("Inscription", Icons.table_chart, "", 0, 0, "5e4fb50400c03a0016b79e7b")),
                 SizedBox(width: 10),
               ],
             ),
@@ -180,12 +179,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
                   StaggeredTile.extent(1, 150.0),
                 ],
                 children: <Widget>[
-                  serviceContainer(Service("Accueil M5", Icons.table_chart, "", 0, 0)),
-                  serviceContainer(Service("Toilette RDC", Icons.wc, "", 0, 0)),
-                  serviceContainer(Service("M2 E-service", Icons.table_chart, "", 0, 0)),
-                  serviceContainer(Service("Caffé 1", Icons.local_drink, "", 0, 0)),
-                  serviceContainer(Service("Distributeur", Icons.local_drink, "", 0, 0)),
-                  serviceContainer(Service("Toilette 1er E", Icons.wc, "", 0, 0)),
+                  serviceContainer(Service("Accueil M5", Icons.table_chart, "", 0, 0, "5e4fb7e9a5a4b70016bbd244")),
+                  serviceContainer(Service("Toilette RDC", Icons.wc, "", 0, 0, "5e4fb7e9a5a4b70016bbd244")),
+                  serviceContainer(Service("M2 E-service", Icons.table_chart, "", 0, 0, "5e4fb7e9a5a4b70016bbd244")),
+                  serviceContainer(Service("Caffé 1", Icons.local_drink, "", 0, 0, "5e4fb7e9a5a4b70016bbd244")),
+                  serviceContainer(Service("Distributeur", Icons.local_drink, "", 0, 0, "5e4fb7e9a5a4b70016bbd244")),
+                  serviceContainer(Service("Toilette 1er E", Icons.wc, "", 0, 0, "5e4fb7e9a5a4b70016bbd244")),
                 ],
             ),
           )

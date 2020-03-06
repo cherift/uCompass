@@ -26,8 +26,10 @@ class MainActivity: FlutterActivity() {
                     val config = MapwizeConfiguration.Builder(this, "cd8ac2e88bc7c9cc62e93934e0abbb2e").build()
                     MapwizeConfiguration.start(config)
 
-                    result.success("suess")
+                    result.success("success")
                     val intent = Intent(this, MapActivity::class.java)
+
+                    intent.putExtra("placeID", call.argument<String>("placeid"));
                     startActivity(intent)
                 }
     }
