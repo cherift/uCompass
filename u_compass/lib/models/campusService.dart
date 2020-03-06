@@ -2,11 +2,13 @@ class CampusService{
   String _name;
   bool _open;
   String _description;
-  int _longitude;
-  int _latitude;
+  double _longitude;
+  double _latitude;
+  int _attente;
   DateTime _openingTime;
   DateTime _closureTime;
   String _affluence;
+  String _type;
 
   CampusService(this._name, this._open, this._description, this._longitude,
       this._latitude, this._openingTime, this._closureTime, this._affluence);
@@ -19,7 +21,9 @@ class CampusService{
         _latitude = data["latitude"],
         _openingTime =DateTime.parse( data["openingTime"].toString()),
         _closureTime =DateTime.parse( data["closureTime"].toString()),
-        _affluence = data["affluence"];
+        _affluence = data["affluence"],
+        _attente = data["attente"],
+        _type = data["type"];
 
 
   String get name => _name;
@@ -48,15 +52,15 @@ class CampusService{
     _openingTime = value;
   }
 
-  int get latitude => _latitude;
+  double get latitude => _latitude;
 
-  set latitude(int value) {
+  set latitude(double value) {
     _latitude = value;
   }
 
-  int get longitude => _longitude;
+  double get longitude => _longitude;
 
-  set longitude(int value) {
+  set longitude(double value) {
     _longitude = value;
   }
 
@@ -68,6 +72,18 @@ class CampusService{
 
   set open(bool value) {
     _open = value;
+  }
+
+  int get attente => _attente;
+
+  set attente(int value) {
+    _attente = value;
+  }
+
+  String get type => _type;
+
+  set type(String value) {
+    _type = value;
   }
 
 

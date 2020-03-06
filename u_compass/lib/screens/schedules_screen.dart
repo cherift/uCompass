@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart';
 import 'package:googleapis/calendar/v3.dart' hide Colors;
 import 'package:provider/provider.dart';
 import 'package:u_compass/providers/authentication.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class SchedulesScreen extends StatefulWidget {
   static const routeNampe = '/edt';
-
 
   @override
   _SchedulesScreenState createState() => _SchedulesScreenState();
@@ -44,13 +44,12 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
         body: Column(
           children: <Widget>[
             CalendarCustom(_onDaySelectedChanged),
-            Container(
-                height: 400,
+            Expanded(
                 child: EventsListWidget(selectedDateTime))
           ],
         ),
     bottomNavigationBar: BottomMenu(3),
-    floatingActionButton: FlatButton(
+    /*floatingActionButton: FlatButton(
         onPressed: () {
       DatePicker.showDateTimePicker(context,
           showTitleActions: true,
@@ -67,7 +66,7 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
     child: Text(
     'show date time picker (Chinese)',
     style: TextStyle(color: Theme.of(context).primaryColor),
-    )),);
+    )),*/);
 
   }
 }

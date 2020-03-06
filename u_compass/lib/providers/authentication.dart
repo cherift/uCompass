@@ -7,7 +7,7 @@ import 'package:u_compass/models/loginVM.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
 
- static String urlServer="https://u-compass-admin.herokuapp.com";
+ static String urlServer="https://u-comp-admin.herokuapp.com";
  String token;
  List<CampusService> campusServices;
 
@@ -25,10 +25,17 @@ class AuthenticationProvider extends ChangeNotifier {
  }
 
 
- Future<List<CampusService>> getAllCampusServices() async{
+ Future<List<CampusService>> getAllCampusServicesRestauration() async{
    var resp = await http.get(urlServer+"/api/campus-services",headers: {"Authorization":"Bearer "+token});
    Iterable iterable = json.decode(resp.body);
-   campusServices = iterable.map((model) => CampusService.fromJson(model)).toList();
+   campusServices = iterable.map((model) => CampusService.fromJson(model)).toList().where((cs)=>cs.type.toLowerCase()=="restauration").toList();
+   return campusServices;
+ }
+
+ Future<List<CampusService>> getAllCampusServicesAdministration() async{
+   var resp = await http.get(urlServer+"/api/campus-services",headers: {"Authorization":"Bearer "+token});
+   Iterable iterable = json.decode(resp.body);
+   campusServices = iterable.map((model) => CampusService.fromJson(model)).toList().where((cs)=>cs.type.toLowerCase()=="administration").toList();
    return campusServices;
  }
 

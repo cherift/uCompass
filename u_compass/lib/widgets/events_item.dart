@@ -25,6 +25,6 @@ class EventsListWidget extends StatelessWidget {
         },
 
 
-      ) : Text("RIen aujourdhui");
+      ) : Text("Auncun cours");
   }
 }

@@ -31,10 +31,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  nagigate(int t){
-
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

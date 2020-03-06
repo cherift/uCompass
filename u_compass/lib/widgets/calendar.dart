@@ -51,9 +51,9 @@ class _CalendarCustomState extends State<CalendarCustom> {
                   calendarStyle: CalendarStyle(
                       selectedColor: Theme.of(context).primaryColor,
                     weekendStyle: TextStyle(color: Theme.of(context).primaryColor)),
-
                 );
               } else {
+
                 return Container(
                     margin: EdgeInsets.all(20),
                     child: Center(child: CircularProgressIndicator()));

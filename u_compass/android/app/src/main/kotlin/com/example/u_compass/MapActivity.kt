@@ -2,36 +2,32 @@ package com.example.u_compass
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.location.Location
 import android.os.Bundle
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import android.util.Log
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.mapbox.android.core.location.LocationEngine
+import com.mapbox.android.core.permissions.PermissionsManager
 import io.indoorlocation.core.IndoorLocation
 import io.indoorlocation.manual.ManualIndoorLocationProvider
-import io.mapwize.mapwizeui.MapwizeFragment
-import io.mapwize.mapwizeui.MapwizeFragmentUISettings
+import io.mapwize.mapwizesdk.api.ApiCallback
 import io.mapwize.mapwizesdk.api.Floor
 import io.mapwize.mapwizesdk.api.MapwizeObject
 import io.mapwize.mapwizesdk.api.Place
 import io.mapwize.mapwizesdk.map.MapOptions
 import io.mapwize.mapwizesdk.map.MapwizeMap
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.location.Location
-import android.location.LocationListener
-import android.os.Looper
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.google.android.gms.location.*
-import com.mapbox.android.core.location.LocationEngine
-import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.mapboxsdk.maps.Style
-import io.mapwize.mapwizesdk.api.DirectionPoint
-import java.security.Permission
-import java.security.Permissions
+import io.mapwize.mapwizeui.MapwizeFragment
+import io.mapwize.mapwizeui.MapwizeFragmentUISettings
+import io.reactivex.observers.DisposableCompletableObserver
 
 
 class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionListener {
@@ -42,7 +38,6 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var permissionManager: PermissionsManager;
     private lateinit var originLocation: Location;
-    private lateinit var locationCallback: LocationCallback
 
     private var locationEngine: LocationEngine? = null;
    // private var locationLayerPlugin: LocationLayerPlugin? = null;
@@ -65,8 +60,8 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         // Uncomment and change value to test different settings configuration
         val uiSettings = MapwizeFragmentUISettings.Builder()
                 //.menuButtonHidden(true)
-                .followUserButtonHidden(false)
-                .floorControllerHidden(false)
+                //.followUserButtonHidden(false)
+                //.floorControllerHidden(false)
                 //.compassHidden(true)
                 .build()
         mapwizeFragment = MapwizeFragment.newInstance(opts, uiSettings)
@@ -76,7 +71,7 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         ft.add(frameLayout.id, mapwizeFragment!!)
         ft.commit()
 
-        setupPermissions()
+      //  setupPermissions()
         makeRequest()
         obtieneLocalizacion()
         System.out.println("YAYAYA")
@@ -84,7 +79,7 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
     }
 
     private fun setupPermissions() {
-        val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             System.out.println("autorise")
@@ -93,17 +88,16 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
 
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION),
                 101)
     }
 
     @SuppressLint("MissingPermission")
     private fun obtieneLocalizacion(){
         System.out.println("YAYAYA")
-
-        fusedLocationClient.lastLocation.addOnCompleteListener(this){ task ->
-                var location: Location? = task.result;
-                    System.out.println("LAST LOCATION"+location.toString())
+        fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    System.out.println("LAST LOCATION")
                     if(location!=null) {
                         latitude = location.latitude
                         longitude = location.longitude
@@ -120,31 +114,46 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         this.locationProvider = ManualIndoorLocationProvider()
         mapwizeMap.setIndoorLocationProvider(this.locationProvider!!)
 
-
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                        System.out.println("LAST LOCATION"+location.toString())
-                        if(location!=null) {
-                            latitude = location.latitude
-                            longitude = location.longitude
-                        }
-                    }
-
-            val il = IndoorLocation("manual", latitude,
-                    longitude,
-                    0.0,
+        mapwizeMap.addOnLongClickListener {
+            val il = IndoorLocation("manual", it.latLngFloor.latitude,
+                    it.latLngFloor.longitude,
+                    it.latLngFloor.floor,
                     System.currentTimeMillis())
             this.locationProvider?.setIndoorLocation(il)
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                locationResult ?: return
-                for (location in locationResult.locations){
-                    // Update UI with location data
-                    // ...
-                }
-            }
         }
 
+        /* mapwizeMap.mapwizeApi.getPlace("5e4fb50400c03a0016b79e7b", object : ApiCallback<Place> {
+            override fun onSuccess(place: Place){
+
+                println("un truc quon peut recup dans les logs avant")
+
+                val compositeDisposable : CompositeDisposable = CompositeDisposable()
+
+                compositeDisposable.clear()
+
+                compositeDisposable.add(mapwizeFragment!!.selectPlace(place, true)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(object : DisposableCompletableObserver() {
+
+                        override fun onComplete() {
+                            print("un truc qui fonctionne quoi")
+                        }
+
+                        override fun onError(e: Throwable) {
+                            println("un truc ${e.message}")
+                        }
+                    })
+                )
+
+                println("un truc quon peut recup dans les logs")
+            }
+
+            override fun onFailure(throwable: Throwable){}
+
+            override fun onNext(`object`: Place) { /* compiled code */
+            }
+        })*/
     }
 
     override fun onMenuButtonClick() {

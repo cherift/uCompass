@@ -4,7 +4,7 @@ class AppBarCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text("U-Compass")
+      title: Text("U Compass")
     );
   }
 }
