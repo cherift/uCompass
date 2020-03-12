@@ -2,11 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:google_maps_webservice/places.dart';
+
+const kGoogleApiKey = "API_KEY";
+
+GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 class AddEventScreen extends StatelessWidget{
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Ajouter un événement"),
       ),
@@ -47,6 +57,17 @@ class AddEventScreen extends StatelessWidget{
                 alignment: Alignment.center,
                 height: 60.0,
                 child: TextField(
+                  onTap: () async {
+                    // show input autocomplete with selected mode
+                    // then get the Prediction selected
+                    Prediction p = await PlacesAutocomplete.show(
+                        context: context,
+                        apiKey: kGoogleApiKey,
+                        mode: Mode.overlay, // Mode.fullscreen
+                        language: "fr",
+                        components: [new Component(Component.country, "fr")]);
+                    displayPrediction(p);
+                  },
                   keyboardType: TextInputType.text,
                   style: TextStyle(
                       color: Theme.of(context).primaryColor
@@ -74,10 +95,23 @@ class AddEventScreen extends StatelessWidget{
                 height: 60.0,
                 child: DateTimeField(
                   format: DateFormat("dd/MM/yyyy"),
+                  decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      contentPadding: EdgeInsets.only(top: 14),
+                      prefixIcon: Icon(
+                        Icons.date_range,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      hintText: "Date"
+                  ),
                   onShowPicker: (context, currentValue) {
                     return showDatePicker(
                         context: context,
-                        firstDate: DateTime(1900),
+                        firstDate: DateTime.now(),
                         initialDate: currentValue ?? DateTime.now(),
                         lastDate: DateTime(2100));
                   },
@@ -93,6 +127,19 @@ class AddEventScreen extends StatelessWidget{
                   children: <Widget>[
                     Flexible(
                       child: DateTimeField(
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor),
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          contentPadding: EdgeInsets.only(top: 14),
+                          prefixIcon: Icon(
+                            Icons.timer,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          hintText: "Debut"
+                        ),
                         format: DateFormat("HH:mm"),
                         onShowPicker: (context, currentValue) async {
                           final time = await showTimePicker(
@@ -107,6 +154,19 @@ class AddEventScreen extends StatelessWidget{
                     Flexible(
                       child: DateTimeField(
                         format: DateFormat("HH:mm"),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).primaryColor),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          contentPadding: EdgeInsets.only(top: 14),
+                          prefixIcon: Icon(
+                            Icons.timer_off,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          hintText: "Fin"
+                        ),
                         onShowPicker: (context, currentValue) async {
                           final time = await showTimePicker(
                             context: context,
@@ -169,5 +229,21 @@ class AddEventScreen extends StatelessWidget{
         ),
       )
     );
+  }
+
+  Future<Null> displayPrediction(Prediction p) async {
+    if (p != null) {
+      PlacesDetailsResponse detail =
+      await _places.getDetailsByPlaceId(p.placeId);
+
+      var placeId = p.placeId;
+      double lat = detail.result.geometry.location.lat;
+      double lng = detail.result.geometry.location.lng;
+
+      var address = await Geocoder.local.findAddressesFromQuery(p.description);
+
+      print(lat);
+      print(lng);
+    }
   }
 }
