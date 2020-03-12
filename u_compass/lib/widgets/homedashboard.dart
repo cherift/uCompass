@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:u_compass/screens/event_screen.dart';
 import 'package:u_compass/screens/plan_screen.dart';
 import 'package:u_compass/screens/schedules_screen.dart';
 
@@ -16,18 +17,25 @@ class HomeDashBord extends StatelessWidget {
         crossAxisSpacing: 18,
         mainAxisSpacing: 18,
         children: <Widget>[
-          dashBoard(context, "U EDT", "Mon emploi du temps", 0, Icons.perm_contact_calendar, routeName:SchedulesScreen.routeNampe),
-          dashBoard(context, "U Calendar", "Mes évèvenements", 2, Icons.event_available, routeName:SchedulesScreen.routeNampe),
-          dashBoard(context, "U Events", "Evènements sur le Campus", 5, Icons.event_note, routeName:SchedulesScreen.routeNampe),
-          dashBoard(context, "U Map", "Map U Campus", 3, Icons.map, routeName:PlanScreen.routeName),
+          dashBoard(context, "U EDT", "Mon emploi du temps", 0, Icons.perm_contact_calendar, SchedulesScreen()),
+          dashBoard(context, "U Calendar", "Mes évèvenements", 2, Icons.event_available, EventScreen()),
+          dashBoard(context, "U Events", "Evènements sur le Campus", 5, Icons.event_note, SchedulesScreen()),
+          dashBoard(context, "U Map", "Map U Campus", 3, Icons.map, PlanScreen()),
         ],
       ),
     );
   }
 
-  GestureDetector dashBoard(BuildContext context, String name, String description, int count, IconData icon, {String routeName}) {
+  GestureDetector dashBoard(BuildContext context, String name, String description, int count, IconData icon, StatefulWidget state) {
     return GestureDetector(
-      onTap: (){ Navigator.of(context).pushReplacementNamed(routeName); },
+      onTap: (){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => state
+            )
+        );
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,

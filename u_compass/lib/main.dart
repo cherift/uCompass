@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:u_compass/providers/authentication.dart';
 import 'package:u_compass/providers/events_to_display.dart';
+import 'package:u_compass/screens/add_event_screen.dart';
+import 'package:u_compass/screens/event_screen.dart';
 import 'package:u_compass/screens/main_screen.dart';
 import 'package:u_compass/screens/plan_screen.dart';
 import 'package:u_compass/screens/schedules_screen.dart';
@@ -53,6 +55,7 @@ class MyApp extends StatelessWidget {
           SchedulesScreen.routeNampe: (ctx) => SchedulesScreen(),
           ServicesScreen.routeName: (ctx) => ServicesScreen(),
           PlanScreen.routeName: (ctx) => PlanScreen(),
+          EventScreen.routeName: (ctx) => EventScreen()
         },
       ),
     );
