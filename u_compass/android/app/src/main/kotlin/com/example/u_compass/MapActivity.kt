@@ -17,6 +17,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
+import com.mapbox.mapboxsdk.geometry.LatLng
 import io.indoorlocation.core.IndoorLocation
 import io.indoorlocation.manual.ManualIndoorLocationProvider
 import io.mapwize.mapwizesdk.api.ApiCallback
@@ -50,11 +52,17 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         // Uncomment and fill place holder to test MapwizeUI on your venue
+        var placeId : String = "5e3f069681d1c4001634e86f"
+
+        intent.getStringExtra("placeID")?.let {
+            placeId = it
+        }
+
         val opts = MapOptions.Builder()
                 //.restrictContentToOrganization("YOUR_ORGANIZATION_ID")
                 //.restrictContentToVenue("YOUR_VENUE_ID")
-                .centerOnVenue("5e3deebd43b78c001679afc1")
-                //.centerOnPlace("YOUR_PLACE_ID")
+                //.centerOnVenue("5e3deebd43b78c001679afc1")
+                .centerOnPlace(placeId)
                 .build()
 
         // Uncomment and change value to test different settings configuration
@@ -121,39 +129,6 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
                     System.currentTimeMillis())
             this.locationProvider?.setIndoorLocation(il)
         }
-
-        /* mapwizeMap.mapwizeApi.getPlace("5e4fb50400c03a0016b79e7b", object : ApiCallback<Place> {
-            override fun onSuccess(place: Place){
-
-                println("un truc quon peut recup dans les logs avant")
-
-                val compositeDisposable : CompositeDisposable = CompositeDisposable()
-
-                compositeDisposable.clear()
-
-                compositeDisposable.add(mapwizeFragment!!.selectPlace(place, true)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableCompletableObserver() {
-
-                        override fun onComplete() {
-                            print("un truc qui fonctionne quoi")
-                        }
-
-                        override fun onError(e: Throwable) {
-                            println("un truc ${e.message}")
-                        }
-                    })
-                )
-
-                println("un truc quon peut recup dans les logs")
-            }
-
-            override fun onFailure(throwable: Throwable){}
-
-            override fun onNext(`object`: Place) { /* compiled code */
-            }
-        })*/
     }
 
     override fun onMenuButtonClick() {

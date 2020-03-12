@@ -16,7 +16,7 @@ class EventWidget extends StatelessWidget {
   Future<void> goMap() async {
     String batteryLevel;
     try {
-      final String result = await platform.invokeMethod('test');
+      final String result = await platform.invokeMethod('test',{'placeid': '5e4fb50400c03a0016b79e7b'});
       batteryLevel=result;
     } on PlatformException catch (e) {
       batteryLevel = "Failed to get battery level: '${e.message}'.";
