@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:u_compass/widgets/bottom_navigation_bar_menu.dart';
 import 'package:u_compass/widgets/drawer_menu.dart';
-import 'package:u_compass/widgets/map.dart';
+import 'package:u_compass/widgets/homedashboard.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = '/';
@@ -39,12 +40,68 @@ class _MainScreenState extends State<MainScreen> {
       ),
       drawer: Menu(),
       body: Center(
-        child: Text("Bienvenue !"),
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 40),
+            Container(
+              height: 50,
+              child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: <Widget>[
+                    eventWild(context, "Rentrée des classes", "C'est le premier jour de mamadou"),
+                    eventWild(context, "Rentrée des classes", "C'est le premier jour de mamadou"),
+                    eventWild(context, "Rentrée des classes", "C'est le premier jour de mamadou"),
+                  ]
+              ),
+            ),
+            SizedBox(height: 40),
+            HomeDashBord(),
+          ]
+        )
       ),
-      bottomNavigationBar: BottomMenu(0),
-      floatingActionButton: FloatingActionButton(
-        child: Text("Go Map"),
-        onPressed: goMap,
+      bottomNavigationBar: BottomMenu(0)
+    );
+  }
+
+  Padding eventWild(BuildContext context, String name, String description){
+    return Padding(
+      padding: EdgeInsets.only(left: 16, right: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                name,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                description,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w100
+                ),
+              )
+            ],
+          ),
+          SizedBox(width: 15),
+          IconButton(
+            alignment: Alignment.topCenter,
+            icon: Icon(
+              Icons.directions_run,
+              color: Theme.of(context).primaryColor,
+              size: 24,
+            ),
+            onPressed: () {},
+          )
+        ],
       ),
     );
   }
