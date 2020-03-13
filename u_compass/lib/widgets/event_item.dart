@@ -21,8 +21,6 @@ class EventWidget extends StatelessWidget {
     } on PlatformException catch (e) {
       batteryLevel = "Failed to get battery level: '${e.message}'.";
     }
-
-
   }
 
 
