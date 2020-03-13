@@ -95,7 +95,7 @@ class CalendarService {
     }
 
     return _calendar.events.list(
-        "kmgohivkaknf9cvbgcso55f4eo@group.calendar.google.com",
+        this._url_calendar,
         timeMin: timeMin,
         timeMax: timeMax,
         timeZone: "Europe/Paris",

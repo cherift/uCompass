@@ -149,7 +149,7 @@ class CampusServiceWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(90),
                 ),
                 child: Icon(
-                  Icons.arrow_upward,
+                  Icons.directions_run,
                   size: 40,
                   color: Colors.white,
                 ),

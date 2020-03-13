@@ -11,6 +11,7 @@ import 'package:u_compass/widgets/drawer_menu.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:u_compass/screens/plan_screen.dart';
 import 'package:u_compass/models/service.dart';
+import 'package:location/location.dart' as loc;
 
 class Post {
   final String title;
@@ -32,7 +33,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   BuildContext context;
 
-  final _origin =
+  var _origin =
       Location(name: "Vous", latitude: 48.862725, longitude: 3.5000000);
   final _destination =
       Location(name: "Campus lille", latitude: 48.862725, longitude: 2.287592);
@@ -46,6 +47,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
   bool displayAdministration = false;
   double _distanceRemaining, _durationRemaining;
 
+  loc.Location location = new loc.Location();
+
+  bool _serviceEnabled;
+  loc.PermissionStatus _permissionGranted;
+  loc.LocationData _locationData;
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +60,26 @@ class _ServicesScreenState extends State<ServicesScreen> {
   }
 
   Future<void> initPlatformState() async {
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == loc.PermissionStatus.DENIED) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != loc.PermissionStatus.GRANTED) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    _origin = new Location(name: "Vous",latitude: _locationData.latitude,longitude:_locationData.longitude);
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.

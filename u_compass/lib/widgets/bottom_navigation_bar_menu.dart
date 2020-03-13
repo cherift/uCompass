@@ -6,6 +6,7 @@ import 'package:u_compass/screens/main_screen.dart';
 import 'package:u_compass/screens/plan_screen.dart';
 import 'package:u_compass/screens/schedules_screen.dart';
 import 'package:u_compass/screens/services_screen.dart';
+import 'package:location/location.dart';
 
 
 
@@ -16,6 +17,10 @@ class BottomMenu extends StatelessWidget {
   BuildContext context;
   int current_index;
   AuthenticationProvider authenticationProvider;
+  Location location = new Location();
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
 
 
   BottomMenu(this.current_index);
@@ -25,13 +30,36 @@ class BottomMenu extends StatelessWidget {
   Future<void> goMap() async {
     String batteryLevel;
     try {
-      final String result = await platform.invokeMethod('test');
+      final String result = await platform.invokeMethod('test',{'locLat':_locationData.latitude,'locLong':_locationData.longitude});
       batteryLevel=result;
     } on PlatformException catch (e) {
       batteryLevel = "Failed to get battery level: '${e.message}'.";
     }
 
   }
+
+ Future<void> initLocalisation() async{
+
+   _serviceEnabled = await location.serviceEnabled();
+
+   if (!_serviceEnabled) {
+     _serviceEnabled = await location.requestService();
+     if (!_serviceEnabled) {
+       return;
+     }
+   }
+
+   _permissionGranted = await location.hasPermission();
+   if (_permissionGranted == PermissionStatus.DENIED) {
+     _permissionGranted = await location.requestPermission();
+     if (_permissionGranted != PermissionStatus.GRANTED) {
+       return;
+     }
+   }
+
+   _locationData = await location.getLocation();
+
+ }
 
   navigate(int item){
     authenticationProvider.connect("admin", "admin");
@@ -47,6 +75,7 @@ class BottomMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     authenticationProvider = Provider.of<AuthenticationProvider>(context);
+    initLocalisation();
     this.context = context;
     return BottomNavigationBar(
       selectedFontSize: 12,

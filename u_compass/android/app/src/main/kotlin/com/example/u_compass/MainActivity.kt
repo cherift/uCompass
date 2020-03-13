@@ -30,6 +30,14 @@ class MainActivity: FlutterActivity() {
                     val intent = Intent(this, MapActivity::class.java)
 
                     intent.putExtra("placeID", call.argument<String>("placeid"));
+
+                    if(call.argument<Double>("locLat")!=null && call.argument<Double>("locLong")!=null ){
+                        val lat = call.argument<Double>("locLat");
+                        val long = call.argument<Double>("locLong");
+                        print("NIEU "+lat+" -- "+long)
+                        intent.putExtra("locLat",lat);
+                        intent.putExtra("locLong",long);
+                    }
                     startActivity(intent)
                 }
     }

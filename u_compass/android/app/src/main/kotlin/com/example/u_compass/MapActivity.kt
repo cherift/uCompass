@@ -46,6 +46,9 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
     private var latitude:Double = 70.0
     private var  longitude:Double = 70.0
 
+    private var myLoclat : Double = 0.0
+    private var myLoclong : Double = 0.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_wize)
@@ -56,6 +59,14 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
 
         intent.getStringExtra("placeID")?.let {
             placeId = it
+        }
+
+        intent.getStringExtra("locLat")?.let {
+            myLoclat =  it as Double
+        }
+
+        intent.getStringExtra("locLong")?.let {
+            myLoclong = it as Double
         }
 
         val opts = MapOptions.Builder()
@@ -121,6 +132,13 @@ class MapActivity : AppCompatActivity(), MapwizeFragment.OnFragmentInteractionLi
         this.mapwizeMap = mapwizeMap
         this.locationProvider = ManualIndoorLocationProvider()
         mapwizeMap.setIndoorLocationProvider(this.locationProvider!!)
+
+        print("NIEU "+myLoclat+" -- "+myLoclong)
+        if(myLoclat != 0.0 && myLoclong != 0.0){
+            val il = IndoorLocation("manual",myLoclat,myLoclong,0.0,System.currentTimeMillis());
+            this.locationProvider?.setIndoorLocation(il);
+        }
+
 
         mapwizeMap.addOnLongClickListener {
             val il = IndoorLocation("manual", it.latLngFloor.latitude,
