@@ -34,9 +34,9 @@ class _ServicesScreenState extends State<ServicesScreen> {
   BuildContext context;
 
   var _origin =
-      Location(name: "Vous", latitude: 48.862725, longitude: 3.5000000);
+  Location(name: "Vous", latitude: 48.862725, longitude: 3.5000000);
   final _destination =
-      Location(name: "Campus lille", latitude: 48.862725, longitude: 2.287592);
+  Location(name: "Campus lille", latitude: 48.862725, longitude: 2.287592);
   String test;
 
   MapboxNavigation _directions;
@@ -61,7 +61,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   Future<void> initPlatformState() async {
 
-    _serviceEnabled = await location.serviceEnabled();
+   /* _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
@@ -79,16 +79,18 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
     _locationData = await location.getLocation();
 
-    _origin = new Location(name: "Vous",latitude: _locationData.latitude,longitude:_locationData.longitude);
+    _origin = new Location(name: "Vous",latitude: _locationData.latitude,longitude:_locationData.longitude);*/
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-    if (!mounted) return;
+    print("INIT FIRST");
 
+    print("INIT");
     _directions = MapboxNavigation(onRouteProgress: (arrived) async {
       _distanceRemaining = await _directions.distanceRemaining;
       _durationRemaining = await _directions.durationRemaining;
 
+      print("FIN INIT");
       setState(() {
         _arrived = arrived;
       });
@@ -168,7 +170,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
     String batteryLevel;
     try {
       final String result =
-          await platform.invokeMethod('test', {'placeid': place});
+      await platform.invokeMethod('test', {'placeid': place});
     } on PlatformException catch (e) {
       print(e.message);
     }
@@ -257,15 +259,15 @@ class _ServicesScreenState extends State<ServicesScreen> {
                       ),
                       Center(
                           child: Padding(
-                        // Service Title
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          service.name,
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 20.0),
-                        ),
-                      ))
+                            // Service Title
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              service.name,
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 20.0),
+                            ),
+                          ))
                     ],
                   )
                 ],

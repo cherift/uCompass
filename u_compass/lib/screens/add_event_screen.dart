@@ -6,15 +6,31 @@ import 'dart:async';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:provider/provider.dart';
+import 'package:u_compass/models/events.dart';
+import 'package:u_compass/providers/schedules.dart';
 
 const kGoogleApiKey = "API_KEY";
 
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
-class AddEventScreen extends StatelessWidget{
+class AddEventScreen extends StatefulWidget {
+  static const routeName = '/add_eventscreen';
+
+  @override
+  _AddEventScreen createState() => _AddEventScreen();
+}
+
+class _AddEventScreen extends State<AddEventScreen>{
+
+  String dropdownValue = 'M5 - IAGL';
+  SchedulesProvider schedulesProvider;
+  PrefEvent event = PrefEvent("","","",DateTime.now(),DateTime.now(),DateTime.now());
 
   @override
   Widget build(BuildContext context) {
+    schedulesProvider = Provider.of<SchedulesProvider>(context);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -47,45 +63,50 @@ class AddEventScreen extends StatelessWidget{
                       ),
                       hintText: "Entrer le titre de l'événment"
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      event.title = value;
+                    });
+                  },
                 ),
               ),
             ),
             SizedBox(height: 10,),
-            Padding(
-              padding: EdgeInsets.only(left: 8, right: 8),
-              child: Container(
-                alignment: Alignment.center,
-                height: 60.0,
-                child: TextField(
-                  onTap: () async {
-                    // show input autocomplete with selected mode
-                    // then get the Prediction selected
-                    Prediction p = await PlacesAutocomplete.show(
-                        context: context,
-                        apiKey: kGoogleApiKey,
-                        mode: Mode.overlay, // Mode.fullscreen
-                        language: "fr",
-                        components: [new Component(Component.country, "fr")]);
-                    displayPrediction(p);
-                  },
-                  keyboardType: TextInputType.text,
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor
-                  ),
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      contentPadding: EdgeInsets.only(top: 14),
-                      prefixIcon: Icon(
-                        Icons.place,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      hintText: "Entrez le lieu de l'événement"
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    "Choisir le lieu",
+                    style: TextStyle(
+                      fontSize: 18
+                    ),
                   ),
                 ),
-              ),
+                Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8),
+                  child: DropdownButton<String>(
+                    value: dropdownValue,
+                    underline: Container(
+                        color: Theme.of(context).primaryColor,
+                        height:1.0
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        dropdownValue = newValue;
+                        event.place = newValue;
+                      });
+                    },
+                    items: <String>['M5 - IAGL', 'M5 - EService', 'M5 - Admin', 'M5 - Café']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 10,),
             Padding(
@@ -114,6 +135,11 @@ class AddEventScreen extends StatelessWidget{
                         firstDate: DateTime.now(),
                         initialDate: currentValue ?? DateTime.now(),
                         lastDate: DateTime(2100));
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      event.date = value;
+                    });
                   },
                 ),
               ),
@@ -148,6 +174,11 @@ class AddEventScreen extends StatelessWidget{
                           );
                           return DateTimeField.convert(time);
                         },
+                        onChanged: (value) {
+                          setState(() {
+                            event.begin = value;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(width: 10,),
@@ -173,6 +204,11 @@ class AddEventScreen extends StatelessWidget{
                             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
                           );
                           return DateTimeField.convert(time);
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            event.end = value;
+                          });
                         },
                       ),
                     ),
@@ -204,6 +240,11 @@ class AddEventScreen extends StatelessWidget{
                       ),
                       hintText: "Description"
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      event.description = value;
+                    });
+                  },
                 ),
               ),
             ),
@@ -212,7 +253,11 @@ class AddEventScreen extends StatelessWidget{
               width: 200,
               child: RaisedButton(
                 elevation: 5.0,
-                onPressed: (){},
+                onPressed: (){
+                  // Save here
+                  schedulesProvider.prefCalendar.events.add(event);
+                  Navigator.pop(context);
+                },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30)
                 ),
@@ -241,9 +286,6 @@ class AddEventScreen extends StatelessWidget{
       double lng = detail.result.geometry.location.lng;
 
       var address = await Geocoder.local.findAddressesFromQuery(p.description);
-
-      print(lat);
-      print(lng);
     }
   }
 }

@@ -2,15 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/auth.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:u_compass/models/events.dart';
 
 class SchedulesProvider with ChangeNotifier {
   Events _events;
+  PrefCalendar _prefCalendar;
   String _url_calendar;
   CalendarService calendarService;
 
   SchedulesProvider() {
     calendarService = new CalendarService();
     calendarService.initConection();
+    fakePrefCelndar();
+  }
+
+  fakePrefCelndar(){
+    this.prefCalendar=PrefCalendar();
+    this._prefCalendar.events = [];
+    this._prefCalendar.events.add(PrefEvent("Platine","M5-IAGL","Présentation",DateTime.now(),DateTime.now(),DateTime.now()));
+    DateTime d = DateTime.now();
+    d.subtract(Duration(days: 1));
   }
 
   String get url_calendar => _url_calendar;
@@ -48,9 +59,27 @@ class SchedulesProvider with ChangeNotifier {
     return map;
   }
 
+    Map<DateTime, List<PrefEvent>> mapPEventsToMap() {
+    List<DateTime> dates =
+    prefCalendar.events.map((e) => e.date).toSet().toList();
+
+    Map<DateTime,List<PrefEvent>> map = Map.fromIterable(dates,
+        key: (date) => date,
+        value: (date) =>
+            prefCalendar.events.where((event) => _isSameDay(date, event.date)).toList());
+    return map;
+  }
+
   bool _isSameDay(DateTime date_1, DateTime date_2){
     return (date_1.day==date_2.day) && (date_1.month==date_2.month) && (date_1.year==date_2.year) ;
   }
+
+  PrefCalendar get prefCalendar => _prefCalendar;
+
+  set prefCalendar(PrefCalendar value) {
+    _prefCalendar = value;
+  }
+
 
 }
 
@@ -95,7 +124,7 @@ class CalendarService {
     }
 
     return _calendar.events.list(
-        this._url_calendar,
+        "kmgohivkaknf9cvbgcso55f4eo@group.calendar.google.com",
         timeMin: timeMin,
         timeMax: timeMax,
         timeZone: "Europe/Paris",
@@ -108,4 +137,6 @@ class CalendarService {
   set url_calendar(String value) {
     _url_calendar = value;
   }
+
+
 }

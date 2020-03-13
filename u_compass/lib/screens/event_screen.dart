@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:u_compass/models/events.dart';
+import 'package:u_compass/providers/schedules.dart';
 import 'package:u_compass/screens/add_event_screen.dart';
-import 'package:u_compass/widgets/bottom_navigation_bar_menu.dart';
-import 'package:u_compass/widgets/drawer_menu.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:u_compass/widgets/prefEvent.dart';
 
 import 'main_screen.dart';
 
@@ -14,8 +18,29 @@ class EventScreen extends StatefulWidget{
 }
 
 class _EventScreen extends State<EventScreen>{
+
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  CalendarController _calendarController;
+  SchedulesProvider schedulesProvider;
+  List<PrefEvent> prefEvent = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _calendarController = CalendarController();
+  }
+
+  void onSelectedDate(DateTime date, List<dynamic> list){
+   setState(() {
+     prefEvent = list;
+   });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    schedulesProvider = Provider.of<SchedulesProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: new IconButton(
@@ -29,8 +54,27 @@ class _EventScreen extends State<EventScreen>{
         ),
         title: Text("Mes U Evénements"),
       ),
-      body: Center(
-        child: Container()
+      body:Column(
+        children: <Widget>[
+          Container(
+              child: TableCalendar(
+                locale: "fr_FR",
+                calendarController: _calendarController,
+                events: schedulesProvider.mapPEventsToMap(),
+                onDaySelected: onSelectedDate,
+                calendarStyle: CalendarStyle(
+                    selectedColor: Theme.of(context).primaryColor,
+                    weekendStyle: TextStyle(color: Theme.of(context).primaryColor)),
+              ),
+            ),
+          Container(
+            height: 350,
+            child:prefEvent.length!=0 ? ListView(
+              children:
+                    prefEvent.map((pe)=> new PrefEventWidget(pe)).toList()
+            ) : Text("Choisir une date"),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){

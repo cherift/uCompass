@@ -48,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
               child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    eventWild(context, "Capgemini", "Capgemini recrute une centaine de stagiaire !"),
+                    eventWild(context, "Capgemini Recrute !", "Capgemini annonce une avalanche..."),
                     eventWild(context, "Rentrée des classes", "C'est le premier jour de mamadou"),
                     eventWild(context, "Rentrée des classes", "C'est le premier jour de mamadou"),
                   ]
